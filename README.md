@@ -1,11 +1,11 @@
-<a href="https://github.com/jkulba/Ponteggio/">
-    <img alt="Ponteggio" src="https://github.com/jkulba/Ponteggio/blob/main/ponteggio.png"
+<a href="https://github.com/YenkoTools/Ponteggio/">
+    <img alt="Ponteggio" src="https://github.com/YenkoTools/Ponteggio/blob/main/ponteggio.png"
     width="150" height="150">
 </a>
 
 # Ponteggio --> Scaffolding
 
-_Opinioniated PowerShell script to generate a new .NET Clean Architecture project_
+_Opiniated PowerShell script to generate a new .NET Clean Architecture project_
 
 ## Dependencies
 
