@@ -7,6 +7,12 @@ param (
     [string]$ProjectName
 )
 
+# Verify that ProjectName is provided
+if (-not $ProjectName) {
+    Write-Error "The parameter -ProjectName is required. Please provide a valid project name."
+    exit 1
+}
+
 # Set the current directory to a variable
 $ScriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
