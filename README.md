@@ -5,7 +5,7 @@
 
 # Ponteggio --> Scaffolding
 
-_Opiniated PowerShell script to generate a new .NET Clean Architecture project_
+_Opinionated PowerShell script to generate a new .NET Clean Architecture project_
 
 ## Dependencies
 
