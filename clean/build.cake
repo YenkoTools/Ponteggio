@@ -9,6 +9,8 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
+var version = Argument("packageVersion", "1.0.0");
+var prerelease = Argument("prerelease", "");
 
 string packageVersion = String.Empty;
 //////////////////////////////////////////////////////////////////////
@@ -16,21 +18,36 @@ string packageVersion = String.Empty;
 //////////////////////////////////////////////////////////////////////
 Setup(context =>
 {
-    // Set environment variable for the duration of the process
-    var processSettings = new ProcessSettings
+    if (BuildSystem.IsLocalBuild && string.IsNullOrEmpty(prerelease))
     {
-        Arguments = "-ExecutionPolicy Bypass -File ./version.ps1"
-    };
+        prerelease = "-local";
+        // configuration = "Debug";
+    }
 
-    StartProcess("pwsh", processSettings);   
-    
-    // Read and deserialize the JSON file
-    var jsonContent = System.IO.File.ReadAllText("src/Api/wwwroot/version.json");
-    var versionDto = System.Text.Json.JsonSerializer.Deserialize<VersionDto>(jsonContent);
-    
-    packageVersion = $"{versionDto.GitTag}-{versionDto.BuildNumber}";
-    
-    Console.WriteLine($"Package Version: {packageVersion}");
+    try
+    {
+        var processSettings = new ProcessSettings
+        {
+            Arguments = "-ExecutionPolicy Bypass -File ./version.ps1"
+        };
+        StartProcess("pwsh", processSettings);
+
+        var jsonContent = System.IO.File.ReadAllText("src/Api/wwwroot/version.json");
+        var versionDto = System.Text.Json.JsonSerializer.Deserialize<VersionDto>(jsonContent);
+
+        if (versionDto.GitTag.StartsWith("v"))
+        {
+            versionDto.GitTag = versionDto.GitTag.Substring(1);
+        }
+
+        packageVersion = $"{versionDto.BuildNumber}-{versionDto.GitTag}";
+
+        Information($"Package Version: {packageVersion}");
+    }
+    catch (Exception ex)
+    {
+        Information($"Error setting up version: {ex.Message}");
+    }
 });
 
 Task("Clean")
