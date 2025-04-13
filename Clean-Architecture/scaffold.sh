@@ -76,6 +76,7 @@ cp -v "$TemplateDir/build.cake" "$ProjectPath/$ProjectName.Api/"
 cp -v "$TemplateDir/build.cake.md" "$ProjectPath/$ProjectName.Api/"
 cp -v "$TemplateDir/git-tag.sh" "$ProjectPath/"
 cp -v "$TemplateDir/git-tag.md" "$ProjectPath/"
+cp -v "$TemplateDir/README.md" "$ProjectPath/"
 cp -v "$TemplateDir/version.sh" "$ProjectPath/$ProjectName.Api/"
 
 # Move into the Client project directory
@@ -139,7 +140,12 @@ chmod +x git-tag.sh
 git init
 git add .
 git commit -m "Initial project commit"
-gh repo create $ProjectName --private --source=. --remote=origin --push
+gh repo create $ProjectName \
+  --private \
+  --source=. \
+  --remote=origin \
+  --push \
+  --description "A Blazor WebAssembly app with Fluent UI components."
 
 git tag -a v0.0.1 -m "Initial project commit"
 git push origin v0.0.1
