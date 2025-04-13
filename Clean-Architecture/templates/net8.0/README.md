@@ -14,7 +14,7 @@ A modern web application built with:
 ├── 📄 main.js \
 └── 📄 utils.js \
 ├── 📁 docs/ \
-└── 📄 README.md \ 
+└── 📄 README.md \
 ├── 📄 .gitignore \
 └── 📄 package.json
 
