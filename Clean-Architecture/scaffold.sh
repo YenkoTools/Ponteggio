@@ -35,14 +35,17 @@ fi
 # Full project path
 ProjectPath="$BASE_DIR/$ProjectName"
 
-# Create directory structure
-mkdir -p "$ProjectPath/src"
+# Create the API directory structure
+mkdir -p "$ProjectPath/$ProjectName.Api/src"
 
-# Move into the project directory
-cd "$ProjectPath"
+# Create the Client directory structure
+mkdir -p "$ProjectPath/$ProjectName.Client/src"
+
+# Move into the API project src directory
+cd "$ProjectPath/$ProjectName.Api"
 
 # Create a new solution
-dotnet new sln --name "$ProjectName"
+dotnet new sln --name "$ProjectName.Api"
 
 # Create projects
 cd src
@@ -59,24 +62,37 @@ mkdir -p Api/wwwroot
 # Assuming script is run from same directory where templates exists
 TemplateDir="$SCRIPT_DIR/templates/$DOTNET_VERSION"
 
-cp -v "$TemplateDir/Api/Api.csproj" "$ProjectPath/src/Api/"
-cp -v "$TemplateDir/Application/Application.csproj" "$ProjectPath/src/Application/"
-cp -v "$TemplateDir/Domain/Domain.csproj" "$ProjectPath/src/Domain/"
-cp -v "$TemplateDir/Infrastructure/Infrastructure.csproj" "$ProjectPath/src/Infrastructure/"
-cp -v "$TemplateDir/Sql/Sql.csproj" "$ProjectPath/src/Sql/"
+cp -v "$TemplateDir/Api/Api.csproj" "$ProjectPath/$ProjectName.Api/src/Api/"
+cp -v "$TemplateDir/Application/Application.csproj" "$ProjectPath/$ProjectName.Api/src/Application/"
+cp -v "$TemplateDir/Domain/Domain.csproj" "$ProjectPath/$ProjectName.Api/src/Domain/"
+cp -v "$TemplateDir/Infrastructure/Infrastructure.csproj" "$ProjectPath/$ProjectName.Api/src/Infrastructure/"
+cp -v "$TemplateDir/Sql/Sql.csproj" "$ProjectPath/$ProjectName.Api/src/Sql/"
 
 # Root-level shared files
-cp -v "$TemplateDir/Directory.Build.props" "$ProjectPath/"
-cp -v "$TemplateDir/Directory.Packages.props" "$ProjectPath/"
-cp -v "$TemplateDir/global.json" "$ProjectPath/"
-cp -v "$TemplateDir/build.cake" "$ProjectPath/"
-cp -v "$TemplateDir/build.cake.md" "$ProjectPath/"
+cp -v "$TemplateDir/Directory.Build.props" "$ProjectPath/$ProjectName.Api/"
+cp -v "$TemplateDir/Directory.Packages.props" "$ProjectPath/$ProjectName.Api/"
+cp -v "$TemplateDir/global.json" "$ProjectPath/$ProjectName.Api/"
+cp -v "$TemplateDir/build.cake" "$ProjectPath/$ProjectName.Api/"
+cp -v "$TemplateDir/build.cake.md" "$ProjectPath/$ProjectName.Api/"
 cp -v "$TemplateDir/git-tag.sh" "$ProjectPath/"
 cp -v "$TemplateDir/git-tag.md" "$ProjectPath/"
-cp -v "$TemplateDir/version.sh" "$ProjectPath/"
+cp -v "$TemplateDir/version.sh" "$ProjectPath/$ProjectName.Api/"
+
+# Move into the Client project directory
+cd "$ProjectPath/$ProjectName.Client"
+
+# Create a new solution
+dotnet new sln --name "$ProjectName.Client"
+
+# Create projects
+cd src
+dotnet new fluentblazorwasm -o Client
+
+cd "$ProjectPath/$ProjectName.Client"
+dotnet sln add $(find . -name "*.csproj")
 
 # Add all projects to solution
-cd "$ProjectPath"
+cd "$ProjectPath/$ProjectName.Api"
 dotnet sln add $(find . -name "*.csproj")
 
 # Add packages to each project
@@ -105,13 +121,28 @@ cd ../Infrastructure
 dotnet add package Dapper --version 2.1.66
 dotnet add package Microsoft.Data.Sqlite --version 9.0.3
 
-# Finalize
-cd "$ProjectPath"
+# Sanity Build
+cd "$ProjectPath/$ProjectName.Api"
 dotnet clean
 dotnet build
 
 dotnet new tool-manifest
 dotnet tool install Cake.Tool --version 5.0.0
+
+# chmod bash scripts
+cd "$ProjectPath/$ProjectName.Api"
+chmod +x version.sh
+cd "$ProjectPath"
+chmod +x git-tag.sh
+
+# Push new project to GitHib
+git init
+git add .
+git commit -m "Initial project commit"
+gh repo create $ProjectName --private --source=. --remote=origin --push
+
+git tag -a v0.0.1 -m "Initial project commit"
+git push origin v0.0.1
 
 echo "✅ Solution and projects created successfully in $ProjectPath"
 
