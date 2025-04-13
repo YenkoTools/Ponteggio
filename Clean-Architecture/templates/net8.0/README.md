@@ -9,13 +9,13 @@ A modern web application built with:
 
 ## 📁 Project Structure
 
-📁 project-root/ 
-├── 📁 src/
-├── 📄 main.js
-└── 📄 utils.js 
-├── 📁 docs/
-└── 📄 README.md 
-├── 📄 .gitignore 
+📁 project-root/ \
+├── 📁 src/ \
+├── 📄 main.js \
+└── 📄 utils.js \
+├── 📁 docs/ \
+└── 📄 README.md \ 
+├── 📄 .gitignore \
 └── 📄 package.json
 
 
