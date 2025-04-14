@@ -28,7 +28,7 @@ Setup(context =>
     {
         var processSettings = new ProcessSettings
         {
-            Arguments = "-ExecutionPolicy Bypass -File ./version.ps1"
+            Arguments = "-ExecutionPolicy Bypass -File ./version.sh"
         };
         StartProcess("pwsh", processSettings);
 
